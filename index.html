@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cowwy Baby</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600&family=Caveat:wght@500&display=swap">
+<style>
+/* Layout: a single soft letter card with a ribbon bow, three quiet scenes (closed, the message, after) */
+:root{
+  --bg:#f9eeec; --paper:#fffaf8; --ink:#4a1f2a; --muted:#9a6f78;
+  --rose:#d9778f; --rose-soft:#f3c9d3; --line:#efdcdc;
+  --serif:"Instrument Serif","Cormorant Garamond",Georgia,serif;
+  --sans:"Figtree","Helvetica Neue",system-ui,sans-serif;
+  --hand:"Caveat","Segoe Script",cursive;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  padding-inline:16px;padding-block:48px;display:grid;place-items:center;overflow-x:hidden}
+.amb{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.amb span{position:absolute;bottom:-20px;color:var(--rose-soft);font-size:12px;animation:rise linear infinite}
+.card{position:relative;z-index:1;width:100%;max-width:400px;background:var(--paper);border-radius:28px;
+  padding:64px 30px 36px;box-shadow:0 1px 0 var(--line),0 30px 60px -30px rgba(74,31,42,.25)}
+.bow{position:absolute;left:50%;top:-34px;width:92px;transform:translateX(-50%);animation:sway 4s ease-in-out infinite;transform-origin:50% 40%}
+.bow svg{width:100%;height:auto;display:block}
+.scene{display:flex;flex-direction:column;gap:22px;animation:fade .8s ease both}
+.tag{font-size:.75rem;letter-spacing:.18em;text-transform:lowercase;color:var(--muted);margin:0}
+.big{font-family:var(--serif);font-weight:400;font-size:clamp(2.2rem,9vw,2.9rem);line-height:1.02;margin:0;letter-spacing:-.01em}
+.big em{font-style:italic;color:var(--rose)}
+.lines{display:flex;flex-direction:column;gap:6px;margin:0}
+.lines span{font-family:var(--serif);font-size:clamp(1.9rem,8vw,2.5rem);line-height:1.08;opacity:0;transform:translateY(10px);transition:opacity .9s ease,transform .9s ease}
+.lines span.show{opacity:1;transform:none}
+.lines span:last-child{font-style:italic;color:var(--rose)}
+.small{margin:0;color:var(--muted);font-size:.95rem;line-height:1.6;max-width:34ch}
+.sign{font-family:var(--hand);font-size:1.7rem;color:var(--rose);margin:0;transform:rotate(-3deg);align-self:flex-end}
+hr{border:0;border-top:1px dashed var(--line);margin:0;width:100%}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button{font-family:var(--sans);font-weight:500;font-size:.98rem;border:0;cursor:pointer;border-radius:999px;padding:.85em 1.6em;
+  transition:transform .35s cubic-bezier(.3,1.4,.6,1),background .2s,opacity .3s,padding .35s,font-size .35s}
+button:focus-visible{outline:2px solid var(--rose);outline-offset:3px}
+.yes{background:var(--ink);color:var(--paper)}
+.yes:hover{background:var(--rose)}
+.no{background:transparent;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line)}
+.open{background:var(--ink);color:var(--paper);align-self:flex-start}
+.open:hover{background:var(--rose)}
+.ask{opacity:0;transition:opacity .8s ease}.ask.show{opacity:1}
+.note{font-size:.82rem;color:var(--muted);min-height:1.2em;margin:0;font-style:italic;font-family:var(--serif);font-size:1.05rem}
+.ghost{background:none;padding:0;color:var(--muted);font-size:.85rem;text-decoration:underline;text-underline-offset:4px;align-self:flex-start}
+.burst{position:fixed;pointer-events:none;color:var(--rose);font-size:14px;z-index:5;animation:pop 1.6s ease-out forwards}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}}
+@keyframes sway{50%{transform:translateX(-50%) rotate(-4deg)}}
+@keyframes rise{to{transform:translateY(-110vh) translateX(20px)}}
+@keyframes pop{0%{opacity:0;transform:translate(0,0) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.lines span{opacity:1;transform:none}.ask{opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="amb" id="amb" aria-hidden="true"></div>
+
+<main class="card">
+  <div class="bow" aria-hidden="true">
+    <svg viewBox="0 0 120 80">
+      <path d="M60 36C44 14 14 6 10 22s22 28 50 14z" fill="#f3c9d3"/>
+      <path d="M60 36C76 14 106 6 110 22S88 50 60 36z" fill="#f3c9d3"/>
+      <path d="M60 36C50 22 28 16 24 24" stroke="#d9778f" stroke-width="1.5" fill="none" opacity=".5"/>
+      <path d="M60 36C70 22 92 16 96 24" stroke="#d9778f" stroke-width="1.5" fill="none" opacity=".5"/>
+      <path d="M56 40L40 76l10-4 6 6 4-36zM64 40l16 36-10-4-6 6-4-36z" fill="#e9a8b8"/>
+      <rect x="52" y="28" width="16" height="16" rx="7" fill="#d9778f"/>
+    </svg>
+  </div>
+
+  <section class="scene" id="s1">
+    <p class="tag">untuk baby</p>
+    <h1 class="big">ada benda ayang <em>nak cakap</em></h1>
+    <p class="small">baca slow slow ok</p>
+    <button class="open" id="open" type="button">buka</button>
+  </section>
+
+  <section class="scene" id="s2" hidden>
+    <p class="tag">dari ayang</p>
+    <p class="lines" id="lines"><span>tolong laaaa babyy....</span><span>jangan laa majuk..</span><span>cowwy laaaa</span></p>
+    <div class="ask" id="ask">
+      <div class="scene" style="gap:14px;animation:none">
+        <hr>
+        <p class="small">maafkan ayang?</p>
+        <div class="row">
+          <button class="yes" id="yes" type="button">okay, maafkan</button>
+          <button class="no" id="no" type="button">tak nak</button>
+        </div>
+        <p class="note" id="note"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene" id="s3" hidden>
+    <p class="tag">yeay</p>
+    <h2 class="big">thank you <em>baby</em></h2>
+    <p class="small">nanti ayang belanja dinner, baby pilih tempat. dan ayang janji lepas ni lebih peka.</p>
+    <p class="sign">sayang baby, ayang</p>
+    <button class="ghost" id="again" type="button">baca semula</button>
+  </section>
+</main>
+
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var amb=$('amb');
+  for(var i=0;i<14;i++){var s=document.createElement('span');s.textContent='♥';
+    s.style.left=Math.random()*100+'vw';s.style.fontSize=(8+Math.random()*10)+'px';
+    s.style.animationDuration=(14+Math.random()*14)+'s';s.style.animationDelay=(-Math.random()*28)+'s';
+    s.style.opacity=.4+Math.random()*.5;amb.appendChild(s);}
+
+  function show(n){['s1','s2','s3'].forEach(function(id,i){$(id).hidden=i!==n-1})}
+  function burst(x,y,n){for(var i=0;i<n;i++){var b=document.createElement('span');b.className='burst';b.textContent='♥';
+    b.style.left=x+'px';b.style.top=y+'px';var a=Math.random()*Math.PI*2,d=40+Math.random()*80;
+    b.style.setProperty('--x',Math.cos(a)*d+'px');b.style.setProperty('--y',Math.sin(a)*d-40+'px');
+    b.style.fontSize=(10+Math.random()*10)+'px';document.body.appendChild(b);(function(b){setTimeout(function(){b.remove()},1700)})(b);}}
+
+  var spans=$('lines').children,timers=[];
+  function reveal(){
+    show(2);
+    [].forEach.call(spans,function(s,i){s.classList.remove('show');timers.push(setTimeout(function(){s.classList.add('show')},400+i*1100))});
+    timers.push(setTimeout(function(){$('ask').classList.add('show')},400+spans.length*1100));
+  }
+  $('open').addEventListener('click',reveal);
+
+  var no=$('no'),yes=$('yes'),note=$('note'),tries=0;
+  var notes=['eh, sure?','baby...','last chance tau','okay button ni dah penat'];
+  no.addEventListener('click',function(){
+    tries++;note.textContent=notes[Math.min(tries-1,notes.length-1)];
+    var s=Math.max(.35,1-tries*.18);no.style.transform='scale('+s+')';no.style.opacity=s;
+    yes.style.transform='scale('+(1+tries*.08)+')';
+    if(tries>=4)no.hidden=true;
+  });
+  yes.addEventListener('click',function(e){
+    var r=yes.getBoundingClientRect();burst(r.left+r.width/2,r.top,18);
+    setTimeout(function(){show(3)},500);
+  });
+  $('again').addEventListener('click',function(){
+    timers.forEach(clearTimeout);timers=[];tries=0;note.textContent='';
+    no.hidden=false;no.style.transform=no.style.opacity=yes.style.transform='';
+    $('ask').classList.remove('show');show(1);
+  });
+})();
+</script>
+</body>
+</html>
